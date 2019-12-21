@@ -2,6 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { Contact } from './contact.model';
 import { Http } from '@angular/http';
 import { ThrowStmt } from '@angular/compiler';
+import { LocalStorageService } from '../localStorageService';
+import { ActivatedRoute } from '@angular/router';
+import { IUser } from '../login/login.component';
+import { Router } from '@angular/router';
+import { ToastService } from '../toast/toast.service';
+
+
+
 @Component({
   selector: 'app-contact',
   templateUrl: './contact.component.html',
@@ -12,10 +20,28 @@ export class ContactComponent implements OnInit {
 
   contacts: Array<Contact> = [];
   params = '';
-  constructor(private http: Http) { }
+  localStorageService: LocalStorageService<Contact>;
+  currentUser: IUser;
+  constructor(private http: Http,
+    private activatedRoute: ActivatedRoute,
+    private router: Router,
+    private toastService: ToastService
+  ) {
+    this.localStorageService = new LocalStorageService('contacts');
+  }
 
   async ngOnInit() {
+    const currentUser = this.localStorageService.getFromStorage('user');
+    if (currentUser == null) {
+
+      this.router.navigate(['login']);
+    }
     this.loadContacts();
+    this.activatedRoute.params.subscribe((data: IUser) => {
+      console.log('data', data);
+      this.currentUser = data;
+    });
+
   }
 
   async loadContacts() {
@@ -36,7 +62,13 @@ export class ContactComponent implements OnInit {
   }
 
   addContact() {
-    this.contacts.unshift(new Contact({}));
+    this.contacts.unshift(new Contact({
+      id: null,
+      firstName: null,
+      lastName: null,
+      phone: null,
+      email: null
+    }));
     console.log('this is contact array', this.contacts);
   }
 
@@ -46,21 +78,37 @@ export class ContactComponent implements OnInit {
 
   }
   saveContact(contact: Contact) {
-    console.log('from save contact', contact);
-    contact.editing = false;
-    this.saveToStorage(this.contacts);
+    let hasError = false;
+    Object.keys(contact).forEach((key: any) => {
+      if (contact[key] == null) {
+        hasError = true;
+        this.toastService.showToast('danger', `Save Failed property ${key} must not be null`, 2000);
+      }
+
+    });
+
+    if (hasError) {
+
+    } else {
+      contact.editing = false;
+      this.saveToStorage(this.contacts);
+
+    }
+
   }
 
   saveToStorage(contacts: Array<Contact>) {
     contacts = this.sortById(contacts);
-    const savedContacts = localStorage.setItem('contacts', JSON.stringify(contacts));
+    return this.localStorageService.saveToStorage(contacts);
+    // const savedContacts = localStorage.setItem('contacts', JSON.stringify(contacts));
 
-    console.log('from saved', savedContacts);
-    return savedContacts;
+    // console.log('from saved', savedContacts);
+    // return savedContacts;
   }
 
   getFromStorage(key: string) {
     const savedContacts = JSON.parse(localStorage.getItem(key));
+    return this.localStorageService.getFromStorage(key);
     return savedContacts;
 
 
@@ -87,7 +135,15 @@ export class ContactComponent implements OnInit {
     contacts.sort((a: Contact, b: Contact) => {
       return a.id > b.id ? 1 : -1;
     });
-return contacts;
+    return contacts;
+  }
+
+
+
+  logout() {
+    //  lear locoal then nav to login
+    this.localStorageService.clearItemsFromLocalstorage('user');
+    this.router.navigate(['']);
   }
 }
 
