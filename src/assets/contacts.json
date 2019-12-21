@@ -1,0 +1,26 @@
+[
+    {
+        "id":1,
+        "firstName": "Chad",
+        "lastName": "Nickel",
+        "email": "123@gmail.com",
+        "phone": "(559) 244-3948",
+        "editing": false
+    },
+    {
+        "id":2,
+        "firstName": "Bo",
+        "lastName": "Jackson",
+        "email": "bojack@gmail.com",
+        "phone": "(559) 244-3948",
+        "editing": false
+    },
+    {
+        "id":3,
+        "firstName": "Jackie",
+        "lastName": "Johnson",
+        "email": "jjthegreat@gmail.com",
+        "phone": "(559) 244-3948",
+        "editing": false
+    }
+]

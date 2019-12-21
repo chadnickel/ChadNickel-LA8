@@ -1,0 +1,83 @@
+
+<nav class="navbar navbar-expand-lg navbar-light bg-primary mainNav">
+  <a class="navbar-brand" href="#">Contact App</a>
+
+  
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link" href="#">Contacts <span class="sr-only">(current)</span></a>
+      </li>
+    
+    </ul>
+    <form class="form-inline my-2 my-lg-0">
+      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" [(ngModel)]="params" name="search">
+      <button class="btn btn-outline-light my-2 my-sm-0" type="submit"(click)="searchContact(params)">Search</button>
+    </form>
+  </div>
+</nav>
+
+
+<ul class="nav justify-content-end navCon" >
+
+  <li class="nav-item">
+    <button type="button" class="btn btn-primary contactButton "(click)="loadContacts()">Load Contacts</button>
+  
+  </li>
+  <li class="nav-item">
+    <button type="button" class="btn btn-dark contactButton"(click)="saveToStorage(contacts)">Save All</button>
+ 
+  </li>
+  <li class="nav-item">
+    <button type="button" class="btn btn-danger contactButton"(click)="addContact()">Add Contact</button>
+    
+  </li>
+</ul>
+
+
+<div class="tableCon">
+<table class="table">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">First Name</th>
+      <th scope="col">Last Name</th>
+      <th scope="col">Email</th>
+      <th scope="col">Phone Number</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let contact of contacts;let i = index">
+      <th *ngIf="!contact.editing" scope="row">{{contact.id}}</th>
+      <td *ngIf="!contact.editing">{{contact.firstName}}</td>
+      <td *ngIf="!contact.editing">{{contact.lastName}}</td>
+      <td *ngIf="!contact.editing">{{contact.email}}</td>
+      <td *ngIf="!contact.editing">{{contact.phone}}</td>
+      <td *ngIf="!contact.editing"> <button type="button" class="btn btn-danger contactButton"(click)="deleteContact(i)">X</button></td>
+
+        <th *ngIf="contact.editing" scope="row"><input [(ngModel)]="contact.id" type="text" class="form-control" placeholder="ID" aria-label="ID" aria-describedby="basic-addon1">      </th>
+          
+  
+        <td *ngIf="contact.editing"> <input [(ngModel)]="contact.firstName" type="text" class="form-control" placeholder="First Name" aria-label="First Name" aria-describedby="basic-addon1"></td>
+        <td *ngIf="contact.editing"> <input [(ngModel)]="contact.lastName" type="text" class="form-control" placeholder="Last Name" aria-label="Last Name" aria-describedby="basic-addon1"></td>
+        <td *ngIf="contact.editing"> <input [(ngModel)]="contact.email" type="text" class="form-control" placeholder="Email" aria-label="Email" aria-describedby="basic-addon1"></td>
+        <td *ngIf="contact.editing"> <input [(ngModel)]="contact.phone" type="text" class="form-control" placeholder="Phone" aria-label="Phone" aria-describedby="basic-addon1"></td>
+        <td *ngIf="contact.editing">
+          <div class="btn-group">
+          <button type="button" class="btn btn-success contactButton"(click)="saveContact(contact)">Save</button>
+          <button type="button" class="btn btn-danger contactButton"(click)="deleteContact(i)">X</button>
+        </div></td>
+
+    </tr>
+   
+    
+  </tbody>
+</table></div>
